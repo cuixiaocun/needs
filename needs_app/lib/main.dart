@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:needs_app/config/app_config.dart';
+import 'package:needs_app/config/colors.dart';
 import 'package:needs_app/routes/app_routes.dart';
 
 void main() async {
@@ -21,18 +22,20 @@ class NeedsApp extends StatelessWidget {
     return GetMaterialApp(
       title: AppConfig.appName,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: AppColors.primary,
+        primarySwatch: Colors.green,
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
+          seedColor: AppColors.primary,
           brightness: Brightness.light,
         ),
         fontFamily: 'Roboto',
       ),
       darkTheme: ThemeData(
+        primaryColor: AppColors.primary,
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
+          seedColor: AppColors.primary,
           brightness: Brightness.dark,
         ),
         fontFamily: 'Roboto',
