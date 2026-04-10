@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:needs_app/controllers/auth_controller.dart';
+import 'package:needs_app/screens/auth/login_screen.dart';
+import 'package:needs_app/screens/auth/register_screen.dart';
 import 'package:needs_app/screens/home/home_screen.dart';
 import 'package:needs_app/screens/splash/splash_screen.dart';
 
@@ -38,7 +39,7 @@ class AppRoutes {
     // Login 路由
     GetPage(
       name: Routes.login,
-      page: () => LoginScreen(),
+      page: () => const LoginScreen(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 300),
       // 登录页面防止返回
@@ -48,7 +49,7 @@ class AppRoutes {
     // Register 路由
     GetPage(
       name: Routes.register,
-      page: () => RegisterScreen(),
+      page: () => const RegisterScreen(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 300),
       preventDuplicates: true,
@@ -80,40 +81,6 @@ class AppRoutes {
   ];
 }
 
-/// Login Screen 占位符
-class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
-
-  final AuthController authController = Get.put(AuthController());
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
-      body: const Center(
-        child: Text('Login Screen'),
-      ),
-    );
-  }
-}
-
-/// Register Screen 占位符
-class RegisterScreen extends StatelessWidget {
-  RegisterScreen({super.key});
-
-  final AuthController authController = Get.put(AuthController());
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Register')),
-      body: const Center(
-        child: Text('Register Screen'),
-      ),
-    );
-  }
-}
-
 /// Order List Screen 占位符
 class OrderListScreen extends StatelessWidget {
   const OrderListScreen({super.key});
@@ -121,7 +88,7 @@ class OrderListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Orders')),
+      appBar: AppBar(title: const Text('订单列表')),
       body: const Center(
         child: Text('Order List Screen'),
       ),
@@ -136,7 +103,7 @@ class WalletScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Wallet')),
+      appBar: AppBar(title: const Text('钱包')),
       body: const Center(
         child: Text('Wallet Screen'),
       ),
@@ -151,7 +118,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Profile')),
+      appBar: AppBar(title: const Text('个人资料')),
       body: const Center(
         child: Text('Profile Screen'),
       ),

@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:needs_app/config/app_config.dart';
 import 'package:needs_app/config/colors.dart';
+import 'package:needs_app/controllers/auth_controller.dart';
 import 'package:needs_app/routes/app_routes.dart';
 
 void main() async {
@@ -10,6 +11,9 @@ void main() async {
 
   // Load environment variables from .env file
   await dotenv.load(fileName: '.env');
+
+  // 初始化 AuthController
+  Get.put<AuthController>(AuthController());
 
   runApp(const NeedsApp());
 }
