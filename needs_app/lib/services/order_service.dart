@@ -42,7 +42,7 @@ class OrderService {
     String? type,
   }) async {
     try {
-      final queryParams = {'page': page};
+      final queryParams = <String, dynamic>{'page': page};
       if (status != null && status != 'all') {
         queryParams['status'] = status;
       }
