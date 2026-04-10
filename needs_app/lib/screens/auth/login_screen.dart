@@ -18,38 +18,38 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   late AuthController _authController;
-  late TextEditingController _emailController;
+  late TextEditingController _phoneController;
   late TextEditingController _passwordController;
   late GlobalKey<FormState> _formKey;
 
-  String? _emailError;
+  String? _phoneError;
   String? _passwordError;
 
   @override
   void initState() {
     super.initState();
     _authController = Get.find<AuthController>();
-    _emailController = TextEditingController();
+    _phoneController = TextEditingController();
     _passwordController = TextEditingController();
     _formKey = GlobalKey<FormState>();
   }
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _phoneController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
-  /// 验证邮箱格式
-  String? _validateEmail(String? value) {
+  /// 验证手机号格式
+  String? _validatePhone(String? value) {
     if (value == null || value.isEmpty) {
-      return '邮箱不能为空';
+      return '手机号不能为空';
     }
-    // 基本的邮箱格式检查
-    final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
-    if (!emailRegex.hasMatch(value)) {
-      return '邮箱格式不正确';
+    // 中国手机号格式检查
+    final phoneRegex = RegExp(r'^1[3-9]\d{9}$');
+    if (!phoneRegex.hasMatch(value)) {
+      return '手机号格式不正确';
     }
     return null;
   }
@@ -69,17 +69,17 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _performLogin() async {
     // 清除之前的错误信息
     setState(() {
-      _emailError = null;
+      _phoneError = null;
       _passwordError = null;
     });
 
     // 验证表单
-    final emailValidation = _validateEmail(_emailController.text);
+    final phoneValidation = _validatePhone(_phoneController.text);
     final passwordValidation = _validatePassword(_passwordController.text);
 
-    if (emailValidation != null || passwordValidation != null) {
+    if (phoneValidation != null || passwordValidation != null) {
       setState(() {
-        _emailError = emailValidation;
+        _phoneError = phoneValidation;
         _passwordError = passwordValidation;
       });
       return;
@@ -95,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       // 调用登录方法
       final success = await _authController.login(
-        email: _emailController.text.trim(),
+        phone: _phoneController.text.trim(),
         password: _passwordController.text,
       );
 
@@ -114,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
               title: '登录失败',
               message: _authController.errorMessage.value.isNotEmpty
                   ? _authController.errorMessage.value
-                  : '登录失败，请检查邮箱和密码后重试',
+                  : '登录失败，请检查手机号和密码后重试',
             ),
           );
         }
@@ -159,7 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 8),
                 // 副标题
                 Text(
-                  '输入邮箱和密码以继续',
+                  '输入手机号和密码以继续',
                   style: TextStyle(
                     fontSize: AppTheme.fontSizeMedium,
                     color: AppColors.textSecondary,
@@ -167,17 +167,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 32),
 
-                // 邮箱输入框
+                // 手机号输入框
                 CustomTextField(
-                  label: '邮箱地址',
-                  hintText: '请输入邮箱',
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  prefixIcon: Icons.email_outlined,
-                  errorText: _emailError,
+                  label: '手机号码',
+                  hintText: '请输入手机号',
+                  controller: _phoneController,
+                  keyboardType: TextInputType.phone,
+                  prefixIcon: Icons.phone_outlined,
+                  errorText: _phoneError,
                   onChanged: (value) {
                     setState(() {
-                      _emailError = null;
+                      _phoneError = null;
                     });
                   },
                 ),

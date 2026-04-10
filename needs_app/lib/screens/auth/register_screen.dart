@@ -66,14 +66,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return null;
   }
 
-  /// 验证邮箱格式
+  /// 验证邮箱格式（可选）
   String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return '邮箱不能为空';
-    }
-    final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
-    if (!emailRegex.hasMatch(value)) {
-      return '邮箱格式不正确';
+    // 邮箱是可选的，但如果填写了就要符合格式
+    if (value != null && value.isNotEmpty) {
+      final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
+      if (!emailRegex.hasMatch(value)) {
+        return '邮箱格式不正确';
+      }
     }
     return null;
   }
@@ -126,21 +126,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     // 验证表单
     final nameValidation = _validateName(_nameController.text);
-    final emailValidation = _validateEmail(_emailController.text);
     final phoneValidation = _validatePhone(_phoneController.text);
+    final emailValidation = _validateEmail(_emailController.text);
     final passwordValidation = _validatePassword(_passwordController.text);
     final passwordConfirmValidation =
         _validatePasswordConfirm(_passwordConfirmController.text);
 
     if (nameValidation != null ||
-        emailValidation != null ||
         phoneValidation != null ||
+        emailValidation != null ||
         passwordValidation != null ||
         passwordConfirmValidation != null) {
       setState(() {
         _nameError = nameValidation;
-        _emailError = emailValidation;
         _phoneError = phoneValidation;
+        _emailError = emailValidation;
         _passwordError = passwordValidation;
         _passwordConfirmError = passwordConfirmValidation;
       });
@@ -158,11 +158,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
       // 调用注册方法
       final success = await _authController.register(
         name: _nameController.text.trim(),
-        email: _emailController.text.trim(),
         phone: _phoneController.text.trim(),
-        role: _selectedRole,
         password: _passwordController.text,
         passwordConfirmation: _passwordConfirmController.text,
+        role: _selectedRole,
+        email: _emailController.text.trim().isEmpty ? null : _emailController.text.trim(),
       );
 
       if (mounted) {
@@ -256,9 +256,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 18),
 
-                // 邮箱输入框
+                // 手机号输入框（必填）
                 CustomTextField(
-                  label: '邮箱地址',
+                  label: '手机号 *',
+                  hintText: '请输入手机号',
+                  controller: _phoneController,
+                  keyboardType: TextInputType.phone,
+                  prefixIcon: Icons.phone_outlined,
+                  errorText: _phoneError,
+                  onChanged: (value) {
+                    setState(() {
+                      _phoneError = null;
+                    });
+                  },
+                ),
+                const SizedBox(height: 18),
+
+                // 邮箱输入框（可选）
+                CustomTextField(
+                  label: '邮箱地址（选填）',
                   hintText: '请输入邮箱',
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -271,22 +287,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   },
                 ),
                 const SizedBox(height: 18),
-
-                // 手机号输入框
-                CustomTextField(
-                  label: '手机号',
-                  hintText: '请输入手机号',
-                  controller: _phoneController,
-                  keyboardType: TextInputType.phone,
-                  prefixIcon: Icons.phone_outlined,
-                  errorText: _phoneError,
-                  onChanged: (value) {
-                    setState(() {
-                      _phoneError = null;
-                    });
-                  },
-                ),
-                const SizedBox(height: 24),
 
                 // 身份选择
                 Text(

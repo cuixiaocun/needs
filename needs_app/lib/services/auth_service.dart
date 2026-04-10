@@ -51,16 +51,16 @@ class AuthService {
   /// 登录
   /// 调用 API 登录，保存 token 和用户信息
   Future<Map<String, dynamic>> login({
-    required String email,
+    required String phone,
     required String password,
   }) async {
     try {
-      _logger.i('Attempting login with email: $email');
+      _logger.i('Attempting login with phone: $phone');
 
       final response = await _dio.post(
         '/auth/login',
         data: {
-          'email': email,
+          'phone': phone,
           'password': password,
         },
       );
@@ -115,24 +115,24 @@ class AuthService {
   /// 调用 API 注册新用户
   Future<Map<String, dynamic>> register({
     required String name,
-    required String email,
+    required String phone,
     required String password,
     required String passwordConfirmation,
     required String role,
-    String? phone,
+    String? email,
   }) async {
     try {
-      _logger.i('Attempting register with email: $email');
+      _logger.i('Attempting register with phone: $phone');
 
       final requestData = {
         'name': name,
-        'email': email,
+        'phone': phone,
         'password': password,
         'password_confirmation': passwordConfirmation,
         'role': role,
       };
-      if (phone != null) {
-        requestData['phone'] = phone;
+      if (email != null) {
+        requestData['email'] = email;
       }
 
       final response = await _dio.post(

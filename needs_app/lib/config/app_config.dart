@@ -22,7 +22,8 @@ class AppConfig {
   static const String alipaySandboxUrl =
       'https://openapi.alipaydev.com/gateway.do';
 
-  static const String alipayProductionUrl = 'https://openapi.alipay.com/gateway.do';
+  static const String alipayProductionUrl =
+      'https://openapi.alipay.com/gateway.do';
 
   // Environment Configuration - Read from .env
   static bool get isDevelopment =>

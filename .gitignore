@@ -1,1 +1,23 @@
 .worktrees/
+.claude/worktrees/
+
+# 环境变量文件（包含敏感信息）
+.env
+.env.local
+.env.*.local
+
+# API Keys 和 Secrets
+*.key
+*.pem
+secrets/
+
+# 临时任务和文档
+TASK*.md
+TASK*.txt
+REVIEW*.md
+IMPROVEMENTS*.md
+ISSUES*.md
+EXECUTIVE*.md
+CODE_*.md
+README_REVIEW.md
+start-backend.*

@@ -46,7 +46,7 @@ class AuthController extends GetxController {
       if (userInfo != null) {
         user.value = userInfo;
         isLoggedIn.value = true;
-        _logger.i('User already logged in: ${userInfo['email']}');
+        _logger.i('User already logged in: ${userInfo['phone']}');
       }
     } else {
       isLoggedIn.value = false;
@@ -55,19 +55,19 @@ class AuthController extends GetxController {
   }
 
   /// 登录
-  /// 使用邮箱和密码登录
+  /// 使用手机号和密码登录
   Future<bool> login({
-    required String email,
+    required String phone,
     required String password,
   }) async {
     try {
       isLoading.value = true;
       errorMessage.value = '';
 
-      _logger.i('Login attempt: $email');
+      _logger.i('Login attempt: $phone');
 
       final result = await _authService.login(
-        email: email,
+        phone: phone,
         password: password,
       );
 
@@ -97,25 +97,25 @@ class AuthController extends GetxController {
   /// 创建新账户
   Future<bool> register({
     required String name,
-    required String email,
+    required String phone,
     required String password,
     required String passwordConfirmation,
     required String role,
-    String? phone,
+    String? email,
   }) async {
     try {
       isLoading.value = true;
       errorMessage.value = '';
 
-      _logger.i('Register attempt: $email with role: $role');
+      _logger.i('Register attempt: $phone with role: $role');
 
       final result = await _authService.register(
         name: name,
-        email: email,
+        phone: phone,
         password: password,
         passwordConfirmation: passwordConfirmation,
         role: role,
-        phone: phone,
+        email: email,
       );
 
       if (result['success'] == true) {

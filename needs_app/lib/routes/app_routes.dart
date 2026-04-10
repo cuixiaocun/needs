@@ -4,6 +4,7 @@ import 'package:needs_app/screens/auth/login_screen.dart';
 import 'package:needs_app/screens/auth/register_screen.dart';
 import 'package:needs_app/screens/home/home_screen.dart';
 import 'package:needs_app/screens/splash/splash_screen.dart';
+import 'package:needs_app/screens/dispatch/ai_chat_screen.dart';
 
 /// 路由名称常量
 class Routes {
@@ -14,6 +15,7 @@ class Routes {
   static const String orderList = '/orders';
   static const String wallet = '/wallet';
   static const String profile = '/profile';
+  static const String aiChat = '/ai-chat';
 }
 
 /// 路由配置类
@@ -75,6 +77,22 @@ class AppRoutes {
     GetPage(
       name: Routes.profile,
       page: () => const ProfileScreen(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 300),
+    ),
+
+    // AI Chat 路由
+    GetPage(
+      name: Routes.aiChat,
+      page: () {
+        final orderId = Get.arguments as int?;
+        if (orderId == null) {
+          return const Scaffold(
+            body: Center(child: Text('订单 ID 不存在')),
+          );
+        }
+        return AiChatScreen(orderId: orderId);
+      },
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 300),
     ),

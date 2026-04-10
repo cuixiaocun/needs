@@ -46,6 +46,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/orders/{orderId}/cancel-status', [\App\Http\Controllers\CancelController::class, 'status']);
     Route::post('/orders/{orderId}/cancel/farmer', [\App\Http\Controllers\CancelController::class, 'cancelByFarmer']);
     Route::post('/orders/{orderId}/cancel/buyer', [\App\Http\Controllers\CancelController::class, 'cancelByBuyer']);
+
+    // AI 对话相关（紧急调货）
+    Route::prefix('ai')->group(function () {
+        Route::post('/chat', [\App\Http\Controllers\AiChatController::class, 'chat']);
+        Route::get('/status/{orderId}', [\App\Http\Controllers\AiChatController::class, 'getStatus']);
+    });
 });
 
 // 支付宝回调（无需认证）

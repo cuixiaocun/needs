@@ -13,17 +13,17 @@ class RegisterController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'phone' => 'required|string|regex:/^1[3-9]\d{9}$/|unique:users',
             'password' => 'required|string|min:6',
-            'phone' => 'nullable|string',
+            'email' => 'nullable|string|email|max:255|unique:users',
             'role' => 'required|in:farmer,buyer,agent,market_worker',
         ]);
 
         $user = User::create([
             'name' => $validated['name'],
-            'email' => $validated['email'],
+            'phone' => $validated['phone'],
             'password' => Hash::make($validated['password']),
-            'phone' => $validated['phone'] ?? null,
+            'email' => $validated['email'] ?? null,
             'role' => $validated['role'],
         ]);
 
