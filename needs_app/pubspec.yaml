@@ -46,6 +46,7 @@ dependencies:
 
   # Image Management
   image_picker: ^1.0.0
+  url_launcher: ^6.0.0
   cached_network_image: ^3.2.0
 
   # Permissions

@@ -42,7 +42,7 @@ class NeedsApp extends StatelessWidget {
         GetPage(
           name: '/splash',
           page: () => const SplashScreen(),
-          transition: Transition.fade,
+          transition: Transition.cupertino,
           transitionDuration: const Duration(milliseconds: 300),
         ),
         GetPage(
