@@ -13,7 +13,7 @@ void main() async {
 }
 
 class NeedsApp extends StatelessWidget {
-  const NeedsApp({Key? key}) : super(key: key);
+  const NeedsApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,7 @@ class NeedsApp extends StatelessWidget {
 
 /// Splash Screen - Initial loading screen
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({super.key});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -165,7 +165,7 @@ class _SplashScreenState extends State<SplashScreen>
                       'Agricultural Supply & Demand Matching Platform',
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.white.withOpacity(0.8),
+                        color: Colors.white.withValues(alpha: 0.8),
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -194,7 +194,7 @@ class _SplashScreenState extends State<SplashScreen>
 
 /// Home Screen - Main app screen
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
