@@ -1,0 +1,133 @@
+import 'package:dio/dio.dart';
+import '../config/app_config.dart';
+import 'storage_service.dart';
+
+class OrderService {
+  final Dio _dio;
+  final StorageService _storageService;
+
+  OrderService({Dio? dio, StorageService? storageService})
+      : _dio = dio ?? Dio(),
+        _storageService = storageService ?? StorageService() {
+    _setupDio();
+  }
+
+  void _setupDio() {
+    _dio.options = BaseOptions(
+      baseUrl: AppConfig.currentApiBaseUrl,
+      connectTimeout: Duration(seconds: AppConfig.apiTimeout),
+      receiveTimeout: Duration(seconds: AppConfig.apiTimeout),
+      sendTimeout: Duration(seconds: AppConfig.apiTimeout),
+      validateStatus: (status) => status! < 500,
+    );
+
+    _dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) {
+        final token = _storageService.getToken();
+        if (token != null) {
+          options.headers['Authorization'] = 'Bearer $token';
+        }
+        return handler.next(options);
+      },
+    ));
+  }
+
+  /// 获取订单列表
+  /// [page] - 页码（从1开始）
+  /// [status] - 筛选状态（all=不筛选, pending, confirmed, completed 等）
+  /// [type] - 订单类型（all=不筛选, buy, sell）
+  Future<Map<String, dynamic>> getOrders({
+    int page = 1,
+    String? status,
+    String? type,
+  }) async {
+    try {
+      final queryParams = {'page': page};
+      if (status != null && status != 'all') {
+        queryParams['status'] = status;
+      }
+      if (type != null && type != 'all') {
+        queryParams['type'] = type;
+      }
+
+      final response = await _dio.get(
+        '/orders',
+        queryParameters: queryParams,
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        if (data['success'] == true) {
+          return {
+            'success': true,
+            'data': data['data'] ?? [],
+            'pagination': {
+              'current_page': data['current_page'] ?? 1,
+              'last_page': data['last_page'] ?? 1,
+              'total': data['total'] ?? 0,
+              'per_page': data['per_page'] ?? 20,
+            },
+            'message': '',
+          };
+        } else {
+          return {
+            'success': false,
+            'data': [],
+            'pagination': {},
+            'message': data['message'] ?? '获取订单失败',
+          };
+        }
+      } else {
+        return {
+          'success': false,
+          'data': [],
+          'pagination': {},
+          'message': response.data['message'] ?? '获取订单列表失败',
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'data': [],
+        'pagination': {},
+        'message': '错误：${e.toString()}',
+      };
+    }
+  }
+
+  /// 获取单个订单详情
+  Future<Map<String, dynamic>> getOrderDetail(int orderId) async {
+    try {
+      final response = await _dio.get('/orders/$orderId');
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        if (data['success'] == true) {
+          return {
+            'success': true,
+            'data': data['data'],
+            'message': '',
+          };
+        } else {
+          return {
+            'success': false,
+            'data': null,
+            'message': data['message'] ?? '获取订单详情失败',
+          };
+        }
+      } else {
+        return {
+          'success': false,
+          'data': null,
+          'message': response.data['message'] ?? '获取订单详情失败',
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'data': null,
+        'message': '错误：${e.toString()}',
+      };
+    }
+  }
+}

@@ -39,8 +39,21 @@ class OrderController extends Controller
 
     public function index(Request $request)
     {
-        $orders = Order::where('farmer_id', $request->user()->id)
-            ->orWhere('buyer_id', $request->user()->id)
+        $query = Order::where('farmer_id', $request->user()->id)
+            ->orWhere('buyer_id', $request->user()->id);
+
+        // 按状态筛选
+        if ($request->has('status') && !empty($request->input('status'))) {
+            $query->where('status', $request->input('status'));
+        }
+
+        // 按类型筛选
+        if ($request->has('type') && !empty($request->input('type'))) {
+            $query->where('type', $request->input('type'));
+        }
+
+        // 按时间倒序排列
+        $orders = $query->orderBy('created_at', 'desc')
             ->paginate(20);
 
         return response()->json([

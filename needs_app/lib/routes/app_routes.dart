@@ -5,6 +5,7 @@ import 'package:needs_app/screens/auth/register_screen.dart';
 import 'package:needs_app/screens/home/home_screen.dart';
 import 'package:needs_app/screens/splash/splash_screen.dart';
 import 'package:needs_app/screens/dispatch/ai_chat_screen.dart';
+import 'package:needs_app/screens/order/order_list_screen.dart' as order_screen;
 
 /// 路由名称常量
 class Routes {
@@ -60,7 +61,7 @@ class AppRoutes {
     // Order List 路由
     GetPage(
       name: Routes.orderList,
-      page: () => const OrderListScreen(),
+      page: () => const order_screen.OrderListScreen(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 300),
     ),
@@ -86,32 +87,12 @@ class AppRoutes {
       name: Routes.aiChat,
       page: () {
         final orderId = Get.arguments as int?;
-        if (orderId == null) {
-          return const Scaffold(
-            body: Center(child: Text('订单 ID 不存在')),
-          );
-        }
         return AiChatScreen(orderId: orderId);
       },
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 300),
     ),
   ];
-}
-
-/// Order List Screen 占位符
-class OrderListScreen extends StatelessWidget {
-  const OrderListScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('订单列表')),
-      body: const Center(
-        child: Text('Order List Screen'),
-      ),
-    );
-  }
 }
 
 /// Wallet Screen 占位符
