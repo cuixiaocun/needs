@@ -33,8 +33,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // 支付相关
     Route::post('/payment/alipay/create', [\App\Http\Controllers\PaymentController::class, 'createAlipayment']);
+    Route::post('/payment/alipay', [\App\Http\Controllers\PaymentController::class, 'createAlipayment']);
     Route::post('/shipping/estimate', [\App\Http\Controllers\PaymentController::class, 'estimateShipping']);
     Route::post('/shipping/create', [\App\Http\Controllers\PaymentController::class, 'createShippingOrder']);
+
+    // 交货相关
+    Route::get('/delivery/fee', [\App\Http\Controllers\DeliveryController::class, 'getFee']);
 
     // 保证金相关
     Route::get('/deposit', [\App\Http\Controllers\DepositController::class, 'show']);
