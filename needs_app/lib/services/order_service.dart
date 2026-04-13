@@ -130,4 +130,47 @@ class OrderService {
       };
     }
   }
+
+  /// 更新订单（用于确认配对）
+  Future<Map<String, dynamic>> updateOrder(
+    int orderId, {
+    int? matchedOrderId,
+  }) async {
+    try {
+      final data = <String, dynamic>{};
+      if (matchedOrderId != null) {
+        data['matched_order_id'] = matchedOrderId;
+      }
+
+      final response = await _dio.patch(
+        '/orders/$orderId',
+        data: data,
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = response.data as Map<String, dynamic>;
+        if (responseData['success'] == true) {
+          return {
+            'success': true,
+            'data': responseData['data'],
+          };
+        } else {
+          return {
+            'success': false,
+            'message': responseData['message'] ?? '更新订单失败',
+          };
+        }
+      } else {
+        return {
+          'success': false,
+          'message': response.data['message'] ?? '更新订单失败',
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': '错误：${e.toString()}',
+      };
+    }
+  }
 }
