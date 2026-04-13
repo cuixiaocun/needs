@@ -9,9 +9,10 @@ import 'package:needs_app/services/delivery_service.dart';
 
 /// 订单详情页
 class OrderDetailScreen extends StatefulWidget {
-  final int orderId;
+  final int? orderId;
+  final Map<String, dynamic>? order;
 
-  const OrderDetailScreen({super.key, required this.orderId});
+  const OrderDetailScreen({super.key, this.orderId, this.order});
 
   @override
   State<OrderDetailScreen> createState() => _OrderDetailScreenState();
@@ -28,7 +29,16 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _loadOrderDetail();
+    if (widget.order != null) {
+      // 使用传入的 order 数据
+      setState(() {
+        _order = widget.order;
+        _isLoading = false;
+      });
+    } else if (widget.orderId != null) {
+      // 从 API 加载订单
+      _loadOrderDetail();
+    }
   }
 
   Future<void> _loadOrderDetail() async {
@@ -38,7 +48,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     });
 
     try {
-      final result = await _orderService.getOrderDetail(widget.orderId);
+      final result = await _orderService.getOrderDetail(widget.orderId!);
       if (mounted) {
         if (result['success']) {
           setState(() {
