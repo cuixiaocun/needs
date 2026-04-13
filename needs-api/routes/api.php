@@ -25,6 +25,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/orders', [\App\Http\Controllers\OrderController::class, 'store']);
     Route::get('/orders', [\App\Http\Controllers\OrderController::class, 'index']);
     Route::get('/orders/{order}', [\App\Http\Controllers\OrderController::class, 'show']);
+    Route::patch('/orders/{order}', [\App\Http\Controllers\OrderController::class, 'update']);
+    Route::put('/orders/{order}', [\App\Http\Controllers\OrderController::class, 'update']);
 
     // 订单撮合
     Route::get('/orders/{orderId}/recommendations', [\App\Http\Controllers\MatchingController::class, 'getRecommendations']);

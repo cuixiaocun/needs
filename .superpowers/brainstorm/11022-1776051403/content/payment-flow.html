@@ -1,0 +1,106 @@
+<h2>支付和交货流程设计</h2>
+<p class="subtitle">方案 B：流程集成方案 - 展示两条用户路径</p>
+
+<div style="margin-bottom: 40px;">
+  <h3 style="text-align: center; margin-bottom: 30px;">路径 1：订单详情页支付</h3>
+
+  <div style="display: flex; align-items: center; justify-content: space-around; margin-bottom: 30px; flex-wrap: wrap;">
+    <div class="mockup" style="width: 280px; margin: 10px;">
+      <div class="mockup-header">订单详情页</div>
+      <div class="mockup-body" style="padding: 20px;">
+        <div style="background: #f5f5f5; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+          <p style="margin: 0; font-size: 14px; color: #666;">🥬 青菜</p>
+          <p style="margin: 6px 0 0; font-weight: bold;">¥1,200</p>
+        </div>
+        <button class="mock-button" style="width: 100%; background: #2196F3; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">立即支付</button>
+      </div>
+    </div>
+
+    <div style="font-size: 24px; color: #ccc;">→</div>
+
+    <div class="mockup" style="width: 280px; margin: 10px;">
+      <div class="mockup-header">确认交货信息</div>
+      <div class="mockup-body" style="padding: 20px;">
+        <div style="background: #f5f5f5; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+          <p style="margin: 0; font-size: 12px; color: #666;">📍 地点</p>
+          <p style="margin: 6px 0; font-weight: bold;">集散市场中转</p>
+          <p style="margin: 0; font-size: 12px; color: #666;">📦 运费</p>
+          <p style="margin: 6px 0; font-weight: bold;">¥80 / 单次</p>
+        </div>
+        <button class="mock-button" style="width: 100%; background: #4CAF50; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">确认并支付</button>
+      </div>
+    </div>
+
+    <div style="font-size: 24px; color: #ccc;">→</div>
+
+    <div class="mockup" style="width: 280px; margin: 10px;">
+      <div class="mockup-header">支付弹窗</div>
+      <div class="mockup-body" style="padding: 20px; text-align: center;">
+        <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin-bottom: 12px;">
+          <p style="margin: 0; font-size: 12px; color: #666;">应付金额</p>
+          <p style="margin: 6px 0; font-size: 24px; font-weight: bold; color: #ff6b00;">¥1,280</p>
+          <p style="margin: 6px 0; font-size: 12px; color: #999;">（订单¥1,200 + 运费¥80）</p>
+        </div>
+        <button class="mock-button" style="width: 100%; background: #FF9800; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">跳转支付宝</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="height: 1px; background: #e0e0e0; margin: 40px 0;"></div>
+
+<div>
+  <h3 style="text-align: center; margin-bottom: 30px;">路径 2：AI 匹配卡片支付</h3>
+
+  <div style="display: flex; align-items: center; justify-content: space-around; margin-bottom: 30px; flex-wrap: wrap;">
+    <div class="mockup" style="width: 280px; margin: 10px;">
+      <div class="mockup-header">AI 聊天页面</div>
+      <div class="mockup-body" style="padding: 20px;">
+        <div style="background: #e3f2fd; padding: 12px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid #2196F3;">
+          <p style="margin: 0; font-size: 12px; color: #666;">找到匹配！</p>
+          <p style="margin: 6px 0; font-weight: bold;">李老板收青菜</p>
+          <p style="margin: 6px 0; font-size: 12px; color: #999;">100斤 @ ¥12/斤</p>
+        </div>
+        <button class="mock-button" style="width: 100%; background: #2196F3; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-size: 12px;">查看详情</button>
+      </div>
+    </div>
+
+    <div style="font-size: 24px; color: #ccc;">→</div>
+
+    <div class="mockup" style="width: 280px; margin: 10px;">
+      <div class="mockup-header">成交确认</div>
+      <div class="mockup-body" style="padding: 20px; text-align: center;">
+        <p style="margin: 0; font-size: 14px; color: #666; margin-bottom: 12px;">确认与 <strong>李老板</strong></p>
+        <p style="margin: 0; font-size: 12px; color: #666; margin-bottom: 12px;">成交 <strong>100斤 青菜</strong></p>
+        <div style="background: #fff3cd; padding: 12px; border-radius: 8px; margin: 12px 0;">
+          <p style="margin: 0; font-size: 12px; color: #999;">合计：¥1,280</p>
+        </div>
+        <button class="mock-button" style="width: 100%; background: #4CAF50; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-bottom: 8px;">确认成交</button>
+        <button class="mock-button" style="width: 100%; background: #e0e0e0; color: #333; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-size: 12px;">返回</button>
+      </div>
+    </div>
+
+    <div style="font-size: 24px; color: #ccc;">→</div>
+
+    <div class="mockup" style="width: 280px; margin: 10px;">
+      <div class="mockup-header">支付弹窗</div>
+      <div class="mockup-body" style="padding: 20px; text-align: center;">
+        <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin-bottom: 12px;">
+          <p style="margin: 0; font-size: 12px; color: #666;">应付金额</p>
+          <p style="margin: 6px 0; font-size: 24px; font-weight: bold; color: #ff6b00;">¥1,280</p>
+        </div>
+        <button class="mock-button" style="width: 100%; background: #FF9800; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">跳转支付宝</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top: 40px; padding: 20px; background: #f5f5f5; border-radius: 8px;">
+  <h4 style="margin-top: 0;">核心特点：</h4>
+  <ul style="margin: 12px 0;">
+    <li>✅ 支付前必须确认交货地点和运费</li>
+    <li>✅ 固定地点（集散市场中转）和固定运费（可配置）</li>
+    <li>✅ 两条路径逻辑一致，提升用户体验</li>
+    <li>✅ 支付弹窗统一展示最终总额</li>
+  </ul>
+</div>

@@ -15,6 +15,8 @@ class Order extends Model
         'price_per_unit',
         'total_amount',
         'status',
+        'type',
+        'quality_level',
         'scheduled_delivery_time',
         'notes',
     ];

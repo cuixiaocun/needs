@@ -32,6 +32,59 @@ class OrderService {
     ));
   }
 
+  /// 创建订单
+  Future<Map<String, dynamic>> createOrder({
+    required String productName,
+    required double quantity,
+    required String unit,
+    required double pricePerUnit,
+    required String type,
+    required String qualityLevel,
+    String? scheduledDeliveryTime,
+    String? notes,
+  }) async {
+    try {
+      final data = {
+        'product_name': productName,
+        'quantity': quantity,
+        'unit': unit,
+        'price_per_unit': pricePerUnit,
+        'type': type,
+        'quality_level': qualityLevel,
+        'scheduled_delivery_time': scheduledDeliveryTime,
+        'notes': notes,
+      };
+
+      final response = await _dio.post('/orders', data: data);
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        final responseData = response.data as Map<String, dynamic>;
+        if (responseData['success'] == true) {
+          return {
+            'success': true,
+            'data': responseData['data'],
+            'message': '订单创建成功',
+          };
+        } else {
+          return {
+            'success': false,
+            'message': responseData['message'] ?? '订单创建失败',
+          };
+        }
+      } else {
+        return {
+          'success': false,
+          'message': response.data['message'] ?? '订单创建失败',
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': '错误：${e.toString()}',
+      };
+    }
+  }
+
   /// 获取订单列表
   /// [page] - 页码（从1开始）
   /// [status] - 筛选状态（all=不筛选, pending, confirmed, completed 等）
