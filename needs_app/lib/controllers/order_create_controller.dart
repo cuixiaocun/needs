@@ -53,13 +53,9 @@ class OrderCreateController extends GetxController {
 
   /// 自动计算订单总金额
   void calculateTotal() {
-    try {
-      final quantity = double.tryParse(formData['quantity']?.toString() ?? '0') ?? 0;
-      final pricePerUnit = double.tryParse(formData['price_per_unit']?.toString() ?? '0') ?? 0;
-      totalAmount.value = quantity * pricePerUnit;
-    } catch (e) {
-      totalAmount.value = 0.0;
-    }
+    final quantity = double.tryParse(formData['quantity']?.toString() ?? '0') ?? 0;
+    final pricePerUnit = double.tryParse(formData['price_per_unit']?.toString() ?? '0') ?? 0;
+    totalAmount.value = quantity * pricePerUnit;
   }
 
   /// 验证表单数据
@@ -100,7 +96,11 @@ class OrderCreateController extends GetxController {
 
     // 交货时间验证（如果填写了，不能早于今天）
     if (formData['scheduled_delivery_time'] != null) {
-      final selectedDate = formData['scheduled_delivery_time'] as DateTime;
+      final value = formData['scheduled_delivery_time'];
+      if (value is! DateTime) {
+        return '交货时间格式不正确';
+      }
+      final selectedDate = value;
       final today = DateTime.now();
       final todayNoTime = DateTime(today.year, today.month, today.day);
       if (selectedDate.isBefore(todayNoTime)) {
@@ -116,28 +116,38 @@ class OrderCreateController extends GetxController {
     // 执行验证
     final validationError = validateForm();
     if (validationError != null) {
-      Get.snackbar(
-        '验证失败',
-        validationError,
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      _showSnackBar('验证失败', validationError);
       return;
+    }
+
+    // 创建数据快照防止并发修改
+    final quantity = double.parse(formData['quantity'].toString());
+    final pricePerUnit = double.parse(formData['price_per_unit'].toString());
+    final productName = formData['product_name'].toString().trim();
+    final unit = formData['unit'].toString();
+    final type = selectedOrderType.value;
+    final qualityLevel = formData['quality_level'].toString();
+    final notes = formData['notes']?.toString().trim() ?? '';
+
+    // 处理日期转换 - 使用安全的格式转换
+    String? scheduledDeliveryTime;
+    if (formData['scheduled_delivery_time'] != null) {
+      final date = formData['scheduled_delivery_time'] as DateTime;
+      scheduledDeliveryTime = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
     }
 
     isLoading.value = true;
     try {
       final result = await _orderService.createOrder(
-        productName: formData['product_name'].toString().trim(),
-        quantity: double.parse(formData['quantity'].toString()),
-        unit: formData['unit'].toString(),
-        pricePerUnit: double.parse(formData['price_per_unit'].toString()),
-        type: selectedOrderType.value,
-        qualityLevel: formData['quality_level'].toString(),
-        scheduledDeliveryTime: formData['scheduled_delivery_time'] != null
-            ? (formData['scheduled_delivery_time'] as DateTime).toString().split(' ')[0]
-            : null,
+        productName: productName,
+        quantity: quantity,
+        unit: unit,
+        pricePerUnit: pricePerUnit,
+        type: type,
+        qualityLevel: qualityLevel,
+        scheduledDeliveryTime: scheduledDeliveryTime,
         deliveryMethod: formData['delivery_method']?.toString(),
-        notes: formData['notes']?.toString().trim(),
+        notes: notes,
       );
 
       if (result['success'] == true) {
@@ -148,27 +158,28 @@ class OrderCreateController extends GetxController {
           _navigateToSuccessScreen(result['data']);
         }
       } else {
-        Get.snackbar(
-          '创建失败',
-          result['message'] ?? '未知错误',
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        _showSnackBar('创建失败', result['message'] ?? '未知错误');
       }
     } catch (e) {
-      Get.snackbar(
-        '错误',
-        '网络错误: ${e.toString()}',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      _showSnackBar('错误', '网络错误: ${e.toString()}');
     } finally {
       isLoading.value = false;
     }
   }
 
+  /// 显示提示信息
+  void _showSnackBar(String title, String message) {
+    Get.snackbar(
+      title,
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+    );
+  }
+
   /// 默认的导航方法（会在 OrderCreateScreen 中被覆盖）
   void _navigateToSuccessScreen(dynamic order) {
     // 这是一个回退方案，实际的导航会通过 setOnSuccessCallback 来处理
-    Get.snackbar('成功', '订单创建成功！');
+    _showSnackBar('成功', '订单创建成功！');
   }
 
   /// 重置表单
@@ -177,5 +188,11 @@ class OrderCreateController extends GetxController {
     formData['quality_level'] = '一级';
     totalAmount.value = 0.0;
     _setDefaultOrderType();
+  }
+
+  @override
+  void onClose() {
+    formData.clear();
+    super.onClose();
   }
 }
