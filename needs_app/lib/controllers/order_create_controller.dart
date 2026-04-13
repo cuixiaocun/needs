@@ -14,6 +14,9 @@ class OrderCreateController extends GetxController {
   late OrderService _orderService;
   late AuthController _authController;
 
+  // 导航回调函数 - 用于处理成功后的导航
+  Function(dynamic order)? _onSuccessCallback;
+
   @override
   void onInit() {
     super.onInit();
@@ -25,6 +28,11 @@ class OrderCreateController extends GetxController {
 
     // 初始化品质等级默认值
     formData['quality_level'] = '一级';
+  }
+
+  /// 设置成功后的导航回调
+  void setOnSuccessCallback(Function(dynamic order) callback) {
+    _onSuccessCallback = callback;
   }
 
   /// 根据用户身份设置默认订单类型
@@ -133,8 +141,12 @@ class OrderCreateController extends GetxController {
       );
 
       if (result['success'] == true) {
-        // 订单创建成功，跳转到成功确认页面
-        _navigateToSuccessScreen(result['data']);
+        // 订单创建成功，触发导航回调或直接跳转
+        if (_onSuccessCallback != null) {
+          _onSuccessCallback!(result['data']);
+        } else {
+          _navigateToSuccessScreen(result['data']);
+        }
       } else {
         Get.snackbar(
           '创建失败',
@@ -153,38 +165,10 @@ class OrderCreateController extends GetxController {
     }
   }
 
-  /// 跳转到成功确认页面
+  /// 默认的导航方法（会在 OrderCreateScreen 中被覆盖）
   void _navigateToSuccessScreen(dynamic order) {
-    // 使用延迟导入来避免循环依赖
-    // 在实际使用时（如 OrderCreateScreen），OrderCreateSuccessScreen 会被正确导入
-    (() async {
-      // 动态导入 OrderCreateSuccessScreen
-      final successScreen = await _importOrderCreateSuccessScreen(order);
-      if (successScreen != null) {
-        Get.off(() => successScreen, transition: Transition.rightToLeft);
-      }
-    })();
-  }
-
-  /// 动态导入成功屏幕
-  Future<dynamic> _importOrderCreateSuccessScreen(dynamic order) async {
-    try {
-      // 延迟到下一帧执行，确保 OrderCreateSuccessScreen 已被定义
-      await Future.delayed(Duration.zero);
-      // 这里返回一个构建器函数，将在 OrderCreateScreen 中完成导入
-      return _buildSuccessScreen(order);
-    } catch (e) {
-      Get.snackbar('错误', '无法打开成功页面: ${e.toString()}');
-      return null;
-    }
-  }
-
-  /// 构建成功屏幕
-  /// 注：这个方法会在 OrderCreateScreen 中使用时调用 OrderCreateSuccessScreen
-  dynamic _buildSuccessScreen(dynamic order) {
-    // 使用 dynamic 类型以避免编译时依赖
-    // 实际的 OrderCreateSuccessScreen 会在 OrderCreateScreen 导入并初始化
-    return null;
+    // 这是一个回退方案，实际的导航会通过 setOnSuccessCallback 来处理
+    Get.snackbar('成功', '订单创建成功！');
   }
 
   /// 重置表单
