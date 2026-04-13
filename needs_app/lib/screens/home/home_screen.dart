@@ -4,6 +4,7 @@ import 'package:needs_app/config/colors.dart';
 import 'package:needs_app/controllers/auth_controller.dart';
 import 'package:needs_app/screens/home/home_controller.dart';
 import 'package:needs_app/screens/order/order_list_screen.dart';
+import 'package:needs_app/screens/order/order_create_screen.dart';
 import 'package:needs_app/screens/wallet/wallet_screen.dart';
 import 'package:needs_app/screens/profile/profile_screen.dart';
 import 'package:needs_app/widgets/common/custom_card.dart';
@@ -109,6 +110,47 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // 发布订单卡片
+                InkWell(
+                  onTap: () => Get.to(() => const OrderCreateScreen()),
+                  child: Card(
+                    color: Colors.blue[50],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(color: Colors.blue[200]!),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              color: Colors.blue[100],
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(Icons.add_circle, size: 32, color: Colors.blue[700]),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('发布订单', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                const SizedBox(height: 4),
+                                Text('发布供应单或需求单，快速找到你的交易伙伴', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+                              ],
+                            ),
+                          ),
+                          Icon(Icons.arrow_forward, color: Colors.blue[700]),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 24),
