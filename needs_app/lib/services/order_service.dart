@@ -41,6 +41,7 @@ class OrderService {
     required String type,
     required String qualityLevel,
     String? scheduledDeliveryTime,
+    String? deliveryMethod,
     String? notes,
   }) async {
     try {
@@ -52,6 +53,7 @@ class OrderService {
         'type': type,
         'quality_level': qualityLevel,
         'scheduled_delivery_time': scheduledDeliveryTime,
+        'delivery_method': deliveryMethod,
         'notes': notes,
       };
 

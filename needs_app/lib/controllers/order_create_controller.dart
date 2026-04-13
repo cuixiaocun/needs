@@ -4,7 +4,7 @@ import 'package:needs_app/services/order_service.dart';
 
 class OrderCreateController extends GetxController {
   // 表单数据存储
-  final formData = <String, dynamic>{}.obs;
+  final formData = RxMap<String, dynamic>();
 
   // UI 状态
   final isLoading = false.obs;
@@ -38,9 +38,8 @@ class OrderCreateController extends GetxController {
   /// 根据用户身份设置默认订单类型
   void _setDefaultOrderType() {
     final user = _authController.getCurrentUser();
-    // 简单判断：如果 role 包含 farmer 则为 sell，否则为 buy
-    final userRole = user?['role']?.toString().toLowerCase() ?? '';
-    selectedOrderType.value = userRole.contains('farmer') ? 'sell' : 'buy';
+    final userRole = user?['role']?.toString() ?? '';
+    selectedOrderType.value = userRole == 'farmer' ? 'sell' : 'buy';
   }
 
   /// 更新表单字段值
@@ -137,6 +136,7 @@ class OrderCreateController extends GetxController {
         scheduledDeliveryTime: formData['scheduled_delivery_time'] != null
             ? (formData['scheduled_delivery_time'] as DateTime).toString().split(' ')[0]
             : null,
+        deliveryMethod: formData['delivery_method']?.toString(),
         notes: formData['notes']?.toString().trim(),
       );
 
