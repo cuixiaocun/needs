@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/order_controller.dart';
 import '../../widgets/common/custom_card.dart';
+import 'order_create_screen.dart';
 
 /// 订单列表页面
 /// 显示用户的所有订单，支持筛选和分页
@@ -53,6 +54,11 @@ class _OrderListScreenState extends State<OrderListScreen> {
         centerTitle: true,
         elevation: 0,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.add_circle),
+            onPressed: () => Get.to(() => const OrderCreateScreen()),
+            tooltip: '发布订单',
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () => _orderController.refresh(),
