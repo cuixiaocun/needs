@@ -4,6 +4,32 @@ import 'package:get/get.dart';
 import 'package:needs_app/config/colors.dart';
 import 'package:needs_app/controllers/order_create_controller.dart';
 
+/// 订单创建表单页面常量
+class _OrderScreenConstants {
+  // 订单类型常量
+  static const String orderTypeSell = 'sell';
+  static const String orderTypeBuy = 'buy';
+
+  // 单位常量
+  static const List<String> unitOptions = ['kg', 't', '斤', '箱', '件', '束', '盒'];
+
+  // 品质等级常量
+  static const List<String> qualityLevels = ['特级', '一级', '二级'];
+
+  // 配送方式常量（值）
+  static const List<String> deliveryMethodValues = [
+    'self_pickup',
+    'logistics',
+    'negotiate'
+  ];
+
+  // 配送方式常量（显示文本）
+  static const List<String> deliveryMethodLabels = ['自提', '物流配送', '双方协商'];
+
+  // 默认品质等级
+  static const String defaultQualityLevel = '一级';
+}
+
 /// 订单创建表单页面
 /// 支持用户发布供应单或需求单
 class OrderCreateScreen extends StatelessWidget {
@@ -62,11 +88,11 @@ class OrderCreateScreen extends StatelessWidget {
               () => SegmentedButton<String>(
                 segments: const [
                   ButtonSegment(
-                    value: 'sell',
+                    value: _OrderScreenConstants.orderTypeSell,
                     label: Text('供应单'),
                   ),
                   ButtonSegment(
-                    value: 'buy',
+                    value: _OrderScreenConstants.orderTypeBuy,
                     label: Text('需求单'),
                   ),
                 ],
@@ -140,7 +166,7 @@ class OrderCreateScreen extends StatelessWidget {
                         const TextInputType.numberWithOptions(decimal: true),
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(
-                        RegExp(r'^\d+\.?\d{0,2}'),
+                        RegExp(r'[0-9.]'),
                       ),
                     ],
                     onChanged: (value) {
@@ -166,15 +192,14 @@ class OrderCreateScreen extends StatelessWidget {
                       ),
                     ),
                     isDense: true,
-                    items: const [
-                      DropdownMenuItem(value: 'kg', child: Text('kg')),
-                      DropdownMenuItem(value: 't', child: Text('t')),
-                      DropdownMenuItem(value: '斤', child: Text('斤')),
-                      DropdownMenuItem(value: '箱', child: Text('箱')),
-                      DropdownMenuItem(value: '件', child: Text('件')),
-                      DropdownMenuItem(value: '束', child: Text('束')),
-                      DropdownMenuItem(value: '盒', child: Text('盒')),
-                    ],
+                    items: _OrderScreenConstants.unitOptions
+                        .map(
+                          (unit) => DropdownMenuItem(
+                            value: unit,
+                            child: Text(unit),
+                          ),
+                        )
+                        .toList(),
                     onChanged: (value) {
                       if (value != null) {
                         controller.updateField('unit', value);
@@ -203,7 +228,7 @@ class OrderCreateScreen extends StatelessWidget {
                   const TextInputType.numberWithOptions(decimal: true),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(
-                  RegExp(r'^\d+\.?\d{0,2}'),
+                  RegExp(r'[0-9.]'),
                 ),
               ],
               onChanged: (value) {
@@ -275,7 +300,8 @@ class OrderCreateScreen extends StatelessWidget {
             // 品质等级
             Obx(
               () => DropdownButtonFormField<String>(
-                initialValue: controller.formData['quality_level'] ?? '一级',
+                initialValue: controller.formData['quality_level'] ??
+                    _OrderScreenConstants.defaultQualityLevel,
                 decoration: InputDecoration(
                   labelText: '品质等级',
                   border: OutlineInputBorder(
@@ -289,11 +315,14 @@ class OrderCreateScreen extends StatelessWidget {
                   ),
                 ),
                 isDense: true,
-                items: const [
-                  DropdownMenuItem(value: '特级', child: Text('特级')),
-                  DropdownMenuItem(value: '一级', child: Text('一级')),
-                  DropdownMenuItem(value: '二级', child: Text('二级')),
-                ],
+                items: _OrderScreenConstants.qualityLevels
+                    .map(
+                      (level) => DropdownMenuItem(
+                        value: level,
+                        child: Text(level),
+                      ),
+                    )
+                    .toList(),
                 onChanged: (value) {
                   if (value != null) {
                     controller.updateField('quality_level', value);
@@ -306,8 +335,14 @@ class OrderCreateScreen extends StatelessWidget {
             Obx(
               () => InkWell(
                 onTap: () async {
+                  final context = Get.context;
+                  if (context == null) {
+                    Get.snackbar('错误', '无法打开日期选择器');
+                    return;
+                  }
+
                   final pickedDate = await showDatePicker(
-                    context: Get.context!,
+                    context: context,
                     initialDate: DateTime.now(),
                     firstDate: DateTime.now(),
                     lastDate: DateTime(2030),
@@ -341,10 +376,8 @@ class OrderCreateScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        controller.formData['scheduled_delivery_time'] != null
-                            ? _formatDate(
-                                controller.formData['scheduled_delivery_time'])
-                            : '请选择日期',
+                        _formatDate(
+                            controller.formData['scheduled_delivery_time']),
                         style: TextStyle(
                           fontSize: 14,
                           color: controller
@@ -362,8 +395,8 @@ class OrderCreateScreen extends StatelessWidget {
             const SizedBox(height: 16),
             // 配送方式
             Obx(
-              () => DropdownButtonFormField<String>(
-                initialValue: controller.formData['delivery_method'],
+              () => DropdownButtonFormField<String?>(
+                initialValue: controller.formData['delivery_method'] as String?,
                 decoration: InputDecoration(
                   labelText: '配送方式',
                   border: OutlineInputBorder(
@@ -378,13 +411,21 @@ class OrderCreateScreen extends StatelessWidget {
                   hintText: '可选',
                 ),
                 isDense: true,
-                items: const [
-                  DropdownMenuItem(value: 'self_pickup', child: Text('自提')),
-                  DropdownMenuItem(value: 'logistics', child: Text('物流配送')),
-                  DropdownMenuItem(
-                    value: 'negotiate',
-                    child: Text('双方协商'),
+                items: [
+                  const DropdownMenuItem<String?>(
+                    value: null,
+                    child: Text('请选择'),
                   ),
+                  ..._OrderScreenConstants.deliveryMethodValues
+                      .asMap()
+                      .entries
+                      .map(
+                        (entry) => DropdownMenuItem<String>(
+                          value: entry.value,
+                          child: Text(
+                              _OrderScreenConstants.deliveryMethodLabels[entry.key]),
+                        ),
+                      ),
                 ],
                 onChanged: (value) {
                   controller.updateField('delivery_method', value);
@@ -482,10 +523,17 @@ class OrderCreateScreen extends StatelessWidget {
   }
 
   /// 格式化日期为 YYYY-MM-DD
+  /// 添加严格的类型检查来防止运行时错误
   String _formatDate(dynamic date) {
     if (date is DateTime) {
       return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
     }
-    return '';
+
+    // 如果值不是 DateTime，返回占位文本
+    if (date != null) {
+      return '日期格式错误';
+    }
+
+    return '请选择日期';
   }
 }
